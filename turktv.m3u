@@ -4,7 +4,7 @@
 # Source principale: liste locale verifiee + mise a jour web publique
 #EXTINF:-1 group-title="TRT",TRT Turk
 https://tv-trtturk.medya.trt.com.tr/master.m3u8
-#EXTINF:-1 tvg-logo="https://i.ibb.co/d6c87Km/trt122.png" group-title="8. |TR|🇹🇷 ULUSAL GENEL",TRT 1
+#EXTINF:-1 tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/TRT_1_logo_%282021-%29.svg/960px-TRT_1_logo_%282021-%29.svg.png" group-title="8. |TR|🇹🇷 ULUSAL GENEL",TRT 1
 https://tv-trt1.medya.trt.com.tr/master.m3u8
 #EXTINF:-1 tvg-logo="https://i.ibb.co/xzZk0Yq/trtavaz.png",TRT AVAZ
 https://tv-trtavaz.medya.trt.com.tr/master.m3u8

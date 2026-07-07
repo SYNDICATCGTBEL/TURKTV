@@ -1,0 +1,27 @@
+# TURKTV
+
+Playlist M3U pour boitier IPTV.
+
+## URL a entrer dans le boitier IPTV
+
+```text
+https://raw.githubusercontent.com/SYNDICATCGTBEL/TURKTV/main/turktv.m3u
+```
+
+Le boitier doit utiliser cette URL web. Si le fichier est importe en local ou par cle USB, il ne se mettra pas a jour automatiquement.
+
+## Modifier une chaine depuis le PC
+
+Double-cliquer sur :
+
+```text
+Modifier_Chaine_TURKTV.cmd
+```
+
+Le menu permet de rechercher une chaine, puis de modifier :
+
+- le lien video de la chaine ;
+- l'image ou le logo de la chaine ;
+- le nom affiche, si besoin.
+
+Apres la modification, le script propose de publier sur GitHub. Tant que la modification n'est pas publiee sur GitHub, le boitier IPTV ne peut pas la recuperer.

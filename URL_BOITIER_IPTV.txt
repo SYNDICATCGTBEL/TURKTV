@@ -1,0 +1,8 @@
+URL M3U a entrer dans le boitier IPTV pour une mise a jour depuis GitHub:
+
+https://raw.githubusercontent.com/SYNDICATCGTBEL/TURKTV/main/turktv.m3u
+
+Important:
+- Cette URL est directement utilisable par un boitier IPTV.
+- Le boitier doit etre configure avec une URL, pas avec le chemin local du PC.
+- Quand turktv.m3u est modifie puis publie sur GitHub, le boitier recupere la version a jour depuis cette URL.

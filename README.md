@@ -25,6 +25,8 @@ Le menu permet de :
 - le nom affiche, si besoin.
 - verifier les chaines qui ne repondent plus.
 - nettoyer la playlist avec le dernier rapport de verification.
+- importer les chaines absentes de `index.m3u`.
+- tester une chaine avec VLC ou un lecteur HTML.
 
 Apres la modification, le script propose de publier sur GitHub. Tant que la modification n'est pas publiee sur GitHub, le boitier IPTV ne peut pas la recuperer.
 
@@ -36,3 +38,5 @@ rapport_chaines.csv
 ```
 
 Le nettoyage retire de `turktv.m3u` les chaines signalees en erreur et cree une sauvegarde dans `backups/`.
+
+Le test lecteur ouvre VLC si VLC est installe sur le PC. Sinon, il cree `lecteur_turktv.html` et l'ouvre dans le navigateur.

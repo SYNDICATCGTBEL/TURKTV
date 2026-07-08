@@ -22,6 +22,8 @@ Le menu permet de modifier:
 - le nom de la chaine si besoin.
 - verifier les chaines qui ne fonctionnent pas.
 - nettoyer la playlist apres verification.
+- importer les chaines absentes de index.m3u.
+- tester une chaine avec VLC ou un lecteur HTML.
 
 Apres modification, il faut publier sur GitHub.
 Sinon le boitier ne verra pas le changement.

@@ -18,10 +18,21 @@ Double-cliquer sur :
 Modifier_Chaine_TURKTV.cmd
 ```
 
-Le menu permet de rechercher une chaine, puis de modifier :
+Le menu permet de :
 
 - le lien video de la chaine ;
 - l'image ou le logo de la chaine ;
 - le nom affiche, si besoin.
+- verifier les chaines qui ne repondent plus.
+- nettoyer la playlist avec le dernier rapport de verification.
 
 Apres la modification, le script propose de publier sur GitHub. Tant que la modification n'est pas publiee sur GitHub, le boitier IPTV ne peut pas la recuperer.
+
+La verification cree deux fichiers locaux :
+
+```text
+chaines_a_corriger.txt
+rapport_chaines.csv
+```
+
+Le nettoyage retire de `turktv.m3u` les chaines signalees en erreur et cree une sauvegarde dans `backups/`.

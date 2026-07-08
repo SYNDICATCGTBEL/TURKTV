@@ -1,4 +1,6 @@
 backups/
 *.log
+rapport_chaines.csv
+chaines_a_corriger.txt
 TurkTV_Auto_Update.m3u
 Turk_Free_Public_Verified_2026-07-07.m3u

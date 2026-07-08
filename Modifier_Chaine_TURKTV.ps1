@@ -150,7 +150,7 @@ function Publish-ToGitHub {
             git config user.email "SYNDICATCGTBEL@users.noreply.github.com"
         }
 
-        git add turktv.m3u README.md URL_BOITIER_IPTV.txt Modifier_Chaine_TURKTV.cmd Modifier_Chaine_TURKTV.ps1 .gitignore | Out-Host
+        git add turktv.m3u README.md URL_BOITIER_IPTV.txt LIRE_MOI_TURKTV.txt Modifier_Chaine_TURKTV.cmd Modifier_Chaine_TURKTV.ps1 Verifier_Chaines_TURKTV.cmd Verifier_Chaines_TURKTV.ps1 Nettoyer_Chaines_TURKTV.cmd Nettoyer_Chaines_TURKTV.ps1 .gitignore | Out-Host
         git diff --cached --quiet
         if ($LASTEXITCODE -eq 0) {
             Write-Host "Aucune modification a publier." -ForegroundColor Yellow

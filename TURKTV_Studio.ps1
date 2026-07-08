@@ -134,6 +134,8 @@ function Get-M3UEntries {
             Number = $entries.Count + 1
             InfoLine = $i
             UrlLine = $urlLine
+            RawInfo = $Lines[$i].TrimEnd()
+            RawUrl = $url
             Name = $name
             Group = $group
             Logo = $logo
@@ -491,10 +493,12 @@ $grid.SelectionMode = "FullRowSelect"
 $grid.MultiSelect = $false
 $grid.AutoSizeColumnsMode = "Fill"
 $grid.RowHeadersVisible = $false
+[void]$grid.Columns.Add("Number", "N°")
 [void]$grid.Columns.Add("Name", "Chaine")
 [void]$grid.Columns.Add("Group", "Groupe")
 [void]$grid.Columns.Add("Status", "Test")
 [void]$grid.Columns.Add("Url", "Lien")
+$grid.Columns["Number"].FillWeight = 8
 $grid.Columns["Name"].FillWeight = 34
 $grid.Columns["Group"].FillWeight = 20
 $grid.Columns["Status"].FillWeight = 13
@@ -526,7 +530,7 @@ $playerPanel.Controls.Add($playerLabel)
 
 $playerButtons = New-Object System.Windows.Forms.Panel
 $playerButtons.Dock = "Bottom"
-$playerButtons.Height = 96
+$playerButtons.Height = 136
 $tabPlayer.Controls.Add($playerButtons)
 $playerButtons.BringToFront()
 
@@ -577,6 +581,24 @@ $btnCopy.Text = "Copier lien"
 $btnCopy.Location = New-Object System.Drawing.Point(374, 52)
 $btnCopy.Size = New-Object System.Drawing.Size(96, 30)
 $playerButtons.Controls.Add($btnCopy)
+
+$btnMoveUp = New-Object System.Windows.Forms.Button
+$btnMoveUp.Text = "Monter"
+$btnMoveUp.Location = New-Object System.Drawing.Point(12, 94)
+$btnMoveUp.Size = New-Object System.Drawing.Size(86, 30)
+$playerButtons.Controls.Add($btnMoveUp)
+
+$btnMoveDown = New-Object System.Windows.Forms.Button
+$btnMoveDown.Text = "Descendre"
+$btnMoveDown.Location = New-Object System.Drawing.Point(104, 94)
+$btnMoveDown.Size = New-Object System.Drawing.Size(102, 30)
+$playerButtons.Controls.Add($btnMoveDown)
+
+$btnMoveTo = New-Object System.Windows.Forms.Button
+$btnMoveTo.Text = "Position..."
+$btnMoveTo.Location = New-Object System.Drawing.Point(212, 94)
+$btnMoveTo.Size = New-Object System.Drawing.Size(102, 30)
+$playerButtons.Controls.Add($btnMoveTo)
 
 $tabExtract = New-Object System.Windows.Forms.TabPage
 $tabExtract.Text = "Recherche / extraction"
@@ -697,7 +719,7 @@ function Refresh-ChannelGrid {
     }
 
     foreach ($item in $items) {
-        $rowIndex = $grid.Rows.Add($item.Name, $item.Group, $item.Status, $item.Url)
+        $rowIndex = $grid.Rows.Add($item.Number, $item.Name, $item.Group, $item.Status, $item.Url)
         $grid.Rows[$rowIndex].Tag = $item
     }
 
@@ -708,6 +730,135 @@ function Load-Playlist {
     $script:Channels = @(Get-M3UEntries -Lines (Read-TextFile $PlaylistPath) -Source "turktv.m3u")
     Refresh-ChannelGrid -Filter $txtSearch.Text
     Add-Log ("Playlist chargee: {0} chaines." -f $script:Channels.Count)
+}
+
+function Select-ChannelInGrid {
+    param(
+        [string]$Name,
+        [string]$Url
+    )
+
+    foreach ($row in $grid.Rows) {
+        if ($row.Tag -and $row.Tag.Name -eq $Name -and $row.Tag.Url -eq $Url) {
+            $grid.ClearSelection()
+            $row.Selected = $true
+            $grid.CurrentCell = $row.Cells[0]
+            try {
+                $grid.FirstDisplayedScrollingRowIndex = $row.Index
+            } catch {}
+            return
+        }
+    }
+}
+
+function Write-PlaylistOrder {
+    param(
+        [object[]]$Entries,
+        [string]$Label
+    )
+
+    $backup = Backup-Playlist -Label $Label
+    $originalLines = Read-TextFile $PlaylistPath
+    $output = New-Object System.Collections.Generic.List[string]
+    $foundFirstEntry = $false
+
+    foreach ($line in $originalLines) {
+        if ($line.Trim().StartsWith("#EXTINF", [System.StringComparison]::OrdinalIgnoreCase)) {
+            $foundFirstEntry = $true
+            break
+        }
+        $output.Add($line)
+    }
+
+    if ($output.Count -eq 0) {
+        $output.Add("#EXTM3U")
+    }
+
+    if ($output[$output.Count - 1].Trim() -ne "") {
+        $output.Add("")
+    }
+
+    foreach ($entry in $Entries) {
+        if (-not [string]::IsNullOrWhiteSpace($entry.RawInfo)) {
+            $output.Add($entry.RawInfo)
+            $output.Add($entry.RawUrl)
+        } else {
+            foreach ($line in (Format-M3UEntry $entry)) {
+                $output.Add($line)
+            }
+        }
+    }
+
+    Write-TextFile -Path $PlaylistPath -Lines $output
+    return $backup
+}
+
+function Move-SelectedChannelByOffset {
+    param([int]$Offset)
+
+    $selected = Get-SelectedChannel
+    if (-not $selected) { return }
+
+    $entries = New-Object System.Collections.ArrayList
+    foreach ($entry in (Get-M3UEntries -Lines (Read-TextFile $PlaylistPath) -Source "turktv.m3u")) {
+        [void]$entries.Add($entry)
+    }
+
+    $currentIndex = [int]$selected.Number - 1
+    $targetIndex = $currentIndex + $Offset
+
+    if ($targetIndex -lt 0 -or $targetIndex -ge $entries.Count) {
+        Add-Log "Deplacement impossible: la chaine est deja en limite de liste."
+        return
+    }
+
+    $item = $entries[$currentIndex]
+    $entries.RemoveAt($currentIndex)
+    $entries.Insert($targetIndex, $item)
+
+    $backup = Write-PlaylistOrder -Entries @($entries) -Label "avant_deplacement_studio"
+    Add-Log ("Chaine deplacee: {0} -> position {1}. Sauvegarde: {2}" -f $item.Name, ($targetIndex + 1), $backup)
+    Load-Playlist
+    Select-ChannelInGrid -Name $item.Name -Url $item.Url
+}
+
+function Move-SelectedChannelToPosition {
+    $selected = Get-SelectedChannel
+    if (-not $selected) { return }
+
+    $entries = New-Object System.Collections.ArrayList
+    foreach ($entry in (Get-M3UEntries -Lines (Read-TextFile $PlaylistPath) -Source "turktv.m3u")) {
+        [void]$entries.Add($entry)
+    }
+
+    $targetText = [Microsoft.VisualBasic.Interaction]::InputBox(
+        ("Nouvelle position entre 1 et {0}" -f $entries.Count),
+        "Deplacer la chaine",
+        [string]$selected.Number
+    )
+    if ([string]::IsNullOrWhiteSpace($targetText)) { return }
+
+    $targetPosition = 0
+    if (-not [int]::TryParse($targetText, [ref]$targetPosition) -or $targetPosition -lt 1 -or $targetPosition -gt $entries.Count) {
+        [System.Windows.Forms.MessageBox]::Show(("La position doit etre un nombre entre 1 et {0}." -f $entries.Count), "Position invalide") | Out-Null
+        return
+    }
+
+    $currentIndex = [int]$selected.Number - 1
+    $targetIndex = $targetPosition - 1
+    if ($currentIndex -eq $targetIndex) {
+        Add-Log "Position inchangee."
+        return
+    }
+
+    $item = $entries[$currentIndex]
+    $entries.RemoveAt($currentIndex)
+    $entries.Insert($targetIndex, $item)
+
+    $backup = Write-PlaylistOrder -Entries @($entries) -Label "avant_deplacement_position_studio"
+    Add-Log ("Chaine deplacee: {0} -> position {1}. Sauvegarde: {2}" -f $item.Name, $targetPosition, $backup)
+    Load-Playlist
+    Select-ChannelInGrid -Name $item.Name -Url $item.Url
 }
 
 function Refresh-CandidateGrid {
@@ -997,6 +1148,9 @@ $btnTest.Add_Click({
 $btnEdit.Add_Click({ Edit-SelectedChannel })
 $btnAddManual.Add_Click({ Add-ManualChannel })
 $btnDelete.Add_Click({ Delete-SelectedChannel })
+$btnMoveUp.Add_Click({ Move-SelectedChannelByOffset -Offset -1 })
+$btnMoveDown.Add_Click({ Move-SelectedChannelByOffset -Offset 1 })
+$btnMoveTo.Add_Click({ Move-SelectedChannelToPosition })
 $playerPanel.Add_Resize({ Resize-EmbeddedPlayer })
 $form.Add_FormClosing({ Stop-Player })
 

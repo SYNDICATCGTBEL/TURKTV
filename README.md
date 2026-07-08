@@ -25,6 +25,7 @@ Ce lanceur ouvre une interface Windows avec :
 - lecteur integre avec VLC quand VLC est installe ;
 - ajout manuel d'une chaine ;
 - suppression d'une chaine selectionnee ;
+- deplacement d'une chaine dans la liste avec `Monter`, `Descendre` ou `Position...` ;
 - test direct d'un lien M3U/M3U8 ;
 - recherche de flux publics turcs ;
 - extraction de liens `.m3u8` depuis une page web, une API ou un fichier M3U ;

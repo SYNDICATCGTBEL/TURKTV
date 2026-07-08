@@ -22,6 +22,7 @@ Le logiciel permet:
 - lire une chaine avec VLC integre si VLC est installe;
 - ajouter une chaine manuellement;
 - supprimer une chaine de la playlist;
+- deplacer une chaine dans la liste;
 - rechercher des flux publics turcs;
 - extraire des liens m3u8 depuis une page web ou un fichier M3U;
 - ajouter les flux selectionnes a turktv.m3u;

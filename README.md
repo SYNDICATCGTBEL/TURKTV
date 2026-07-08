@@ -23,6 +23,8 @@ Ce lanceur ouvre une interface Windows avec :
 - liste des chaines de `turktv.m3u` ;
 - recherche par nom, groupe ou lien ;
 - lecteur integre avec VLC quand VLC est installe ;
+- ajout manuel d'une chaine ;
+- suppression d'une chaine selectionnee ;
 - test direct d'un lien M3U/M3U8 ;
 - recherche de flux publics turcs ;
 - extraction de liens `.m3u8` depuis une page web, une API ou un fichier M3U ;

@@ -526,45 +526,57 @@ $playerPanel.Controls.Add($playerLabel)
 
 $playerButtons = New-Object System.Windows.Forms.Panel
 $playerButtons.Dock = "Bottom"
-$playerButtons.Height = 58
+$playerButtons.Height = 96
 $tabPlayer.Controls.Add($playerButtons)
 $playerButtons.BringToFront()
 
 $btnPlay = New-Object System.Windows.Forms.Button
 $btnPlay.Text = "Lire"
-$btnPlay.Location = New-Object System.Drawing.Point(12, 14)
+$btnPlay.Location = New-Object System.Drawing.Point(12, 10)
 $btnPlay.Size = New-Object System.Drawing.Size(86, 30)
 $playerButtons.Controls.Add($btnPlay)
 
 $btnStop = New-Object System.Windows.Forms.Button
 $btnStop.Text = "Stop"
-$btnStop.Location = New-Object System.Drawing.Point(104, 14)
+$btnStop.Location = New-Object System.Drawing.Point(104, 10)
 $btnStop.Size = New-Object System.Drawing.Size(86, 30)
 $playerButtons.Controls.Add($btnStop)
 
 $btnTest = New-Object System.Windows.Forms.Button
 $btnTest.Text = "Tester lien"
-$btnTest.Location = New-Object System.Drawing.Point(196, 14)
+$btnTest.Location = New-Object System.Drawing.Point(196, 10)
 $btnTest.Size = New-Object System.Drawing.Size(96, 30)
 $playerButtons.Controls.Add($btnTest)
 
+$btnBrowser = New-Object System.Windows.Forms.Button
+$btnBrowser.Text = "Navigateur"
+$btnBrowser.Location = New-Object System.Drawing.Point(298, 10)
+$btnBrowser.Size = New-Object System.Drawing.Size(96, 30)
+$playerButtons.Controls.Add($btnBrowser)
+
+$btnAddManual = New-Object System.Windows.Forms.Button
+$btnAddManual.Text = "Ajouter chaine"
+$btnAddManual.Location = New-Object System.Drawing.Point(12, 52)
+$btnAddManual.Size = New-Object System.Drawing.Size(128, 30)
+$playerButtons.Controls.Add($btnAddManual)
+
 $btnEdit = New-Object System.Windows.Forms.Button
 $btnEdit.Text = "Modifier"
-$btnEdit.Location = New-Object System.Drawing.Point(298, 14)
+$btnEdit.Location = New-Object System.Drawing.Point(148, 52)
 $btnEdit.Size = New-Object System.Drawing.Size(96, 30)
 $playerButtons.Controls.Add($btnEdit)
 
+$btnDelete = New-Object System.Windows.Forms.Button
+$btnDelete.Text = "Supprimer"
+$btnDelete.Location = New-Object System.Drawing.Point(250, 52)
+$btnDelete.Size = New-Object System.Drawing.Size(116, 30)
+$playerButtons.Controls.Add($btnDelete)
+
 $btnCopy = New-Object System.Windows.Forms.Button
 $btnCopy.Text = "Copier lien"
-$btnCopy.Location = New-Object System.Drawing.Point(400, 14)
+$btnCopy.Location = New-Object System.Drawing.Point(374, 52)
 $btnCopy.Size = New-Object System.Drawing.Size(96, 30)
 $playerButtons.Controls.Add($btnCopy)
-
-$btnBrowser = New-Object System.Windows.Forms.Button
-$btnBrowser.Text = "Navigateur"
-$btnBrowser.Location = New-Object System.Drawing.Point(502, 14)
-$btnBrowser.Size = New-Object System.Drawing.Size(96, 30)
-$playerButtons.Controls.Add($btnBrowser)
 
 $tabExtract = New-Object System.Windows.Forms.TabPage
 $tabExtract.Text = "Recherche / extraction"
@@ -826,6 +838,89 @@ function Edit-SelectedChannel {
     Load-Playlist
 }
 
+function Add-ManualChannel {
+    $name = [Microsoft.VisualBasic.Interaction]::InputBox("Nom de la chaine a ajouter", "Ajouter chaine", "")
+    if ([string]::IsNullOrWhiteSpace($name)) { return }
+
+    $url = [Microsoft.VisualBasic.Interaction]::InputBox("Lien video m3u8", "Ajouter chaine", "")
+    if ([string]::IsNullOrWhiteSpace($url) -or $url -notmatch '^https?://') {
+        [System.Windows.Forms.MessageBox]::Show("Le lien doit commencer par http:// ou https://", "Lien invalide") | Out-Null
+        return
+    }
+
+    $logo = [Microsoft.VisualBasic.Interaction]::InputBox("Image/logo URL (optionnel)", "Ajouter chaine", "")
+    if (-not [string]::IsNullOrWhiteSpace($logo) -and $logo -notmatch '^https?://') {
+        [System.Windows.Forms.MessageBox]::Show("Le logo doit commencer par http:// ou https://, ou rester vide.", "Logo invalide") | Out-Null
+        return
+    }
+
+    $group = [Microsoft.VisualBasic.Interaction]::InputBox("Groupe/categorie (optionnel)", "Ajouter chaine", "Ajout manuel")
+
+    $entry = [pscustomobject]@{
+        Name = $name.Trim()
+        Url = $url.Trim()
+        Logo = $logo.Trim()
+        Group = $group.Trim()
+        Key = Normalize-Name $name
+        UrlKey = $url.Trim().ToLowerInvariant()
+    }
+
+    $sets = Existing-KeySets
+    if ($sets.Names.Contains($entry.Key) -or $sets.Urls.Contains($entry.UrlKey)) {
+        $answer = [System.Windows.Forms.MessageBox]::Show(
+            "Cette chaine ou ce lien semble deja exister. Ajouter quand meme ?",
+            "Doublon possible",
+            [System.Windows.Forms.MessageBoxButtons]::YesNo,
+            [System.Windows.Forms.MessageBoxIcon]::Warning
+        )
+        if ($answer -ne [System.Windows.Forms.DialogResult]::Yes) { return }
+    }
+
+    $backup = Backup-Playlist -Label "avant_ajout_manuel"
+    $lines = New-Object System.Collections.Generic.List[string]
+    foreach ($line in (Read-TextFile $PlaylistPath)) { $lines.Add($line) }
+    $lines.Add("")
+    $lines.Add("# Chaine ajoutee manuellement depuis TURKTV Studio")
+    $lines.Add(("# Date d'ajout: {0}" -f (Get-Date -Format "yyyy-MM-dd HH:mm:ss")))
+    foreach ($line in (Format-M3UEntry $entry)) {
+        $lines.Add($line)
+    }
+
+    Write-TextFile -Path $PlaylistPath -Lines $lines
+    Add-Log ("Chaine ajoutee: {0}. Sauvegarde: {1}" -f $entry.Name, $backup)
+    Load-Playlist
+}
+
+function Delete-SelectedChannel {
+    $selected = Get-SelectedChannel
+    if (-not $selected) { return }
+
+    $answer = [System.Windows.Forms.MessageBox]::Show(
+        ("Supprimer cette chaine de turktv.m3u ?`r`n`r`n{0}`r`n{1}" -f $selected.Name, $selected.Url),
+        "Confirmer la suppression",
+        [System.Windows.Forms.MessageBoxButtons]::YesNo,
+        [System.Windows.Forms.MessageBoxIcon]::Warning
+    )
+    if ($answer -ne [System.Windows.Forms.DialogResult]::Yes) { return }
+
+    $backup = Backup-Playlist -Label "avant_suppression_studio"
+    $lines = Read-TextFile $PlaylistPath
+    $skip = New-Object System.Collections.Generic.HashSet[int]
+    [void]$skip.Add([int]$selected.InfoLine)
+    [void]$skip.Add([int]$selected.UrlLine)
+
+    $output = New-Object System.Collections.Generic.List[string]
+    for ($i = 0; $i -lt $lines.Count; $i++) {
+        if (-not $skip.Contains($i)) {
+            $output.Add($lines[$i])
+        }
+    }
+
+    Write-TextFile -Path $PlaylistPath -Lines $output
+    Add-Log ("Chaine supprimee: {0}. Sauvegarde: {1}" -f $selected.Name, $backup)
+    Load-Playlist
+}
+
 function Add-CandidatesToPlaylist {
     $selectedRows = @($candidateGrid.SelectedRows)
     if ($selectedRows.Count -eq 0) {
@@ -900,6 +995,8 @@ $btnTest.Add_Click({
     Add-Log ("Resultat: {0} - {1}" -f $selected.Status, $result.Message)
 })
 $btnEdit.Add_Click({ Edit-SelectedChannel })
+$btnAddManual.Add_Click({ Add-ManualChannel })
+$btnDelete.Add_Click({ Delete-SelectedChannel })
 $playerPanel.Add_Resize({ Resize-EmbeddedPlayer })
 $form.Add_FormClosing({ Stop-Player })
 

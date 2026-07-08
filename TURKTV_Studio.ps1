@@ -1,5 +1,6 @@
 param(
-    [switch]$SelfTest
+    [switch]$SelfTest,
+    [switch]$SmokeTest
 )
 
 $ErrorActionPreference = "Stop"
@@ -439,10 +440,14 @@ $form.MinimumSize = New-Object System.Drawing.Size(1080, 680)
 
 $main = New-Object System.Windows.Forms.SplitContainer
 $main.Dock = "Fill"
-$main.SplitterDistance = 520
-$main.Panel1MinSize = 440
-$main.Panel2MinSize = 520
 $form.Controls.Add($main)
+$form.Add_Shown({
+    try {
+        $main.Panel1MinSize = 340
+        $main.Panel2MinSize = 420
+        $main.SplitterDistance = 520
+    } catch {}
+})
 
 $leftTop = New-Object System.Windows.Forms.Panel
 $leftTop.Dock = "Top"
@@ -969,4 +974,11 @@ if ([string]::IsNullOrWhiteSpace($vlcPath)) {
 } else {
     Add-Log ("VLC: {0}" -f $vlcPath)
 }
+
+if ($SmokeTest) {
+    Write-Host "SmokeTest OK - interface initialisee."
+    $form.Dispose()
+    exit 0
+}
+
 [System.Windows.Forms.Application]::Run($form)

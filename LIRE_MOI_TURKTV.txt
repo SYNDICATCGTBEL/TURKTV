@@ -13,7 +13,19 @@ Le boitier la recharge depuis Internet selon ses propres reglages de rafraichiss
 Fichier prepare dans ce dossier:
 turktv.m3u
 
-Pour modifier une chaine depuis le PC:
+Pour ouvrir le logiciel visuel depuis le PC:
+double-cliquer sur TURKTV_Studio.cmd
+
+Le logiciel permet:
+- voir la liste des chaines;
+- tester les liens;
+- lire une chaine avec VLC integre si VLC est installe;
+- rechercher des flux publics turcs;
+- extraire des liens m3u8 depuis une page web ou un fichier M3U;
+- ajouter les flux selectionnes a turktv.m3u;
+- publier sur GitHub.
+
+Ancien menu CMD:
 double-cliquer sur Modifier_Chaine_TURKTV.cmd
 
 Le menu permet de modifier:

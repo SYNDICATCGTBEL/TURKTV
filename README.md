@@ -15,17 +15,34 @@ Le boitier doit utiliser cette URL web. Si le fichier est importe en local ou pa
 Double-cliquer sur :
 
 ```text
+TURKTV_Studio.cmd
+```
+
+Ce lanceur ouvre une interface Windows avec :
+
+- liste des chaines de `turktv.m3u` ;
+- recherche par nom, groupe ou lien ;
+- lecteur integre avec VLC quand VLC est installe ;
+- test direct d'un lien M3U/M3U8 ;
+- recherche de flux publics turcs ;
+- extraction de liens `.m3u8` depuis une page web, une API ou un fichier M3U ;
+- ajout des flux selectionnes dans `turktv.m3u` ;
+- publication GitHub.
+
+L'ancien menu reste disponible avec :
+
+```text
 Modifier_Chaine_TURKTV.cmd
 ```
 
 Le menu permet de :
 
-- le lien video de la chaine ;
-- l'image ou le logo de la chaine ;
-- le nom affiche, si besoin.
-- verifier les chaines qui ne repondent plus.
-- nettoyer la playlist avec le dernier rapport de verification.
-- importer les chaines absentes de `index.m3u`.
+- modifier le lien video de la chaine ;
+- modifier l'image ou le logo ;
+- modifier le nom affiche, si besoin ;
+- verifier les chaines qui ne repondent plus ;
+- nettoyer la playlist avec le dernier rapport de verification ;
+- importer les chaines absentes de `index.m3u` ;
 - tester une chaine avec VLC ou un lecteur HTML.
 
 Apres la modification, le script propose de publier sur GitHub. Tant que la modification n'est pas publiee sur GitHub, le boitier IPTV ne peut pas la recuperer.

@@ -1,0 +1,29 @@
+{
+  "priority_channels": [
+    "TYT TÜRK",
+    "ATV (1080p)",
+    "TRT 1 (1440p)",
+    "Kanal D (Turkiye) (1080p)",
+    "Beyaz TV (720p) [Not 24/7]",
+    "Show TV",
+    "Kanal 7 (720p)",
+    "Star TV (Turkiye) (720p)",
+    "A Haber (1080p)",
+    "TRT Haber (720p)",
+    "TV 8",
+    "TV8.5",
+    "NOW (720p)",
+    "Moviesmart Türk HD"
+  ],
+  "renewers": [
+    {
+      "channel": "NOW (720p)",
+      "type": "official_webpage",
+      "page": "https://www.nowtv.com.tr/canli-yayin",
+      "allowed_stream_hosts": [
+        "nowtv.daioncdn.net",
+        "nowtv-live-ad.ercdn.net"
+      ]
+    }
+  ]
+}

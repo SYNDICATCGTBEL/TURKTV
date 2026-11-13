@@ -204,7 +204,7 @@ https://tv-trthaber.medya.trt.com.tr/master.m3u8
 #EXTINF:-1 tvg-chno="102" tvg-id="TRTMuzik.tr@SD" tvg-logo="https://i.imgur.com/JgUzRH8.png" group-title="Music",TRT Muzik (720p)
 https://tv-trtmuzik.medya.trt.com.tr/master.m3u8
 #EXTINF:-1 tvg-chno="103" tvg-id="TRTTurk.tr@SD" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/TRT_T%C3%BCrk_logo.svg/960px-TRT_T%C3%BCrk_logo.svg.png" group-title="Undefined",TRT Turk (720p)
-https://tv-trtturk.medya.trt.com.tr/master.m3u8
+https://tv-trtturk.medya.trt.com.tr/master_720.m3u8
 #EXTINF:-1 tvg-chno="104" tvg-id="TV4.tr@SD" tvg-logo="https://i.imgur.com/UpsQsbd.png" group-title="Undefined",TV 4 (720p)
 https://turkmedya-live.ercdn.net/tv4/tv4.m3u8
 #EXTINF:-1 tvg-chno="105" tvg-id="TV41.tr@SD" tvg-logo="https://i.imgur.com/6T472LM.png" group-title="Undefined",TV 41 (720p) [Not 24/7]
@@ -221,3 +221,37 @@ https://live.artidijitalmedya.com/artidijital_van65/van65/playlist.m3u8
 https://playlist.fasttvcdn.com/pl/rfrk9821hdy9dayo8wfyha/kltr-sanat-tv/playlist.m3u8
 #EXTINF:-1 tvg-chno="111" tvg-id="YOLTV.de@SD" tvg-logo="https://i.imgur.com/rTBX6lS.png" group-title="General",YOL TV (720p)
 https://live.yoltv.com/hls/stream.m3u8
+#EXTINF:-1 tvg-chno="112" @{value=#EXTINF:-1 tvg-name="TEVE2" tvg-id="Teve2.tr" tvg-logo="https://i.ibb.co/JRpJc2P/teve2.png" group-title="ULUSAL",TEVE 2
+https://live.duhnet.tv/S2/HLS_LIVE/teve2np/track_4_1000/playlist.m3u8
+#EXTINF:-1 tvg-chno="113" @{value=#EXTINF:-1 tvg-name="TRT COCUK" tvg-id="TRTCocuk.tr" tvg-logo="https://i.ibb.co/mbvwYMB/trt-cocuk.png" group-title="ULUSAL",TRT COCUK
+https://tv-trtcocuk.medya.trt.com.tr/master_720.m3u8
+#EXTINF:-1 tvg-chno="114" @{value=#EXTINF:-1 tvg-name="NR1 FASHION ONE" tvg-id="" tvg-logo="https://i.ibb.co/HV0x9JZ/fashion-one.png" group-title="MUZIK",NR1 FASHION ONE
+http://b01c02nl.mediatriple.net/videoonlylive/mtkgeuihrlfwlive/u_stream_5c9e2ee6997cb_1/playlist.m3u8
+#EXTINF:-1 tvg-chno="115" @{value=#EXTINF:-1 tvg-name="BENGUTURK TV" tvg-id="BenguturkTV.tr" tvg-logo="https://i.ibb.co/CHWhMvQ/bengu-turk.png" group-title="HABER",BENGU TURK
+https://tv.ensonhaber.com/benguturk/benguturk_720p.m3u8
+#EXTINF:-1 tvg-chno="116" @{value=#EXTINF:-1 tvg-id="ATV.tr@SD" tvg-logo="https://i.imgur.com/HyVUwFC.png" group-title="General",ATV (1080p)
+https://rnttwmjcin.turknet.ercdn.net/lcpmvefbyo/atv/atv_1080p.m3u8
+#EXTINF:-1 tvg-chno="117" @{value=#EXTINF:-1 tvg-logo="https://i.ibb.co/Z1vHy41/tlc.png",TLC TR
+http://dygvideo.dygdigital.com/live/hls/tlctvdai?m3u8
+#EXTINF:-1 tvg-chno="118" @{value=#EXTINF:-1,RIZE TURK HD
+https://yayin.rizeturk.com:3777/hybrid/play.m3u8
+#EXTINF:-1 tvg-chno="119" @{value=#EXTINF:-1,VUSLAT TV
+https://live.artidijitalmedya.com/artidijital_vuslattv/vuslattv/playlist.m3u8
+#EXTINF:-1 tvg-chno="120" @{value=#EXTINF:-1 tvg-logo="https://www.lyngsat.com/logo/tv/tt/tay-tv-tr.png" group-title="SPOR KANALLARI",TAY TV
+https://duhnet.hipodrom.com/S2/HLS_LIVE/mislitaynp/playlist.m3u8
+#EXTINF:-1 tvg-chno="121" @{value=#EXTINF:-1 tvg-logo="https://i.hizliresim.com/cq6uyxu." group-title="Play Tv | Ulusal",Ekol Tv
+https://ekoltv-live.ercdn.net/ekoltv/ekoltv_1080p.m3u8
+#EXTINF:-1 tvg-chno="122" @{value=#EXTINF:-1 tvg-logo="https://i.ibb.co/QQQR6VK/dmax.png",DMAX
+http://dygvideo.dygdigital.com/live/hls/dmaxdai?m3u8
+#EXTINF:-1 tvg-chno="123" @{value=#EXTINF:-1 tvg-logo="https://i.ibb.co/kxjKk89/showmax.png",SHOW MAX
+http://rmtftbjlne.turknet.ercdn.net/bpeytmnqyp/showmax/showmax.m3u8
+#EXTINF:-1 tvg-chno="124" @{value=#EXTINF:-1 group-title="Source officielle",Show TV
+https://ciner.daioncdn.net/showtv/showtv.m3u8?ce=3&app=4bc856ef-4c68-4a94-bc87-37dfaaa66558&st=RBzhSuGauna0OGld-DJUVA&e=1664766175&tv=1
+#EXTINF:-1 tvg-chno="125" @{value=#EXTINF:-1,KANAL B
+https://baskentaudiovideo.xyz/LiveApp/streams/mUE22idl26lA1683879097431.m3u8
+#EXTINF:-1 tvg-chno="126" @{value=#EXTINF:-1 tvg-logo="https://i.ibb.co/bLpTdYZ/tv100.png",TV 100
+https://tv.ensonhaber.com/tv100/tv100.m3u8
+#EXTINF:-1 tvg-chno="127" tvg-logo="https://i.ibb.co/N2n2tqMz/tyt.png" group-title="Genel",TYT TÜRK
+https://tytturk-live.ercdn.net/tytturk/tytturk.m3u8
+#EXTINF:-1 tvg-chno="128" tvg-logo="https://i.ibb.co/dgj3MTh/tv85.png" group-title="Spor",TV8.5
+https://rkhubpaomb.turknet.ercdn.net/fwjkgpasof/tv8bucuk/tv8bucuk.m3u8

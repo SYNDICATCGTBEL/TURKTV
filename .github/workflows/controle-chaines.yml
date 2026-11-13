@@ -28,7 +28,7 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Récupérer la playlist
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Choisir le niveau de contrôle
         id: mode

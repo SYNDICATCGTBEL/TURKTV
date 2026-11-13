@@ -24,7 +24,7 @@ https://rkhubpaomb.turknet.ercdn.net/fwjkgpasof/tv8/tv8_1080p.m3u8
 #EXTINF:-1 tvg-id="TV8,5 HD.tr" tvg-chno="12" tvg-logo="https://i.ibb.co/dgj3MTh/tv85.png" group-title="Spor",TV8.5
 https://rkhubpaomb.turknet.ercdn.net/fwjkgpasof/tv8bucuk/tv8bucuk.m3u8
 #EXTINF:-1 tvg-chno="13" tvg-id="NOW.tr" tvg-logo="https://i.imgur.com/5EYjWK7.png" group-title="Entertainment",NOW (720p)
-https://nowtv.daioncdn.net/nowtv/nowtv.m3u8?ce=3&app=65fa8997-2b2f-4529-85ea-84318628a608&st=YIfB_325ySYRXfhq-RtfWg&e=1794623645
+https://nowtv.daioncdn.net/nowtv/nowtv.m3u8?ce=3&app=65fa8997-2b2f-4529-85ea-84318628a608&st=tNtQNHYNJhov8mpLbzJDMw&e=1794623636
 #EXTINF:-1 tvg-chno="14" tvg-id="MovieSmart Turk.tr" tvg-logo="https://dsmart-static-v2.ercdn.net//resize-width/400//content/e/ZI/13863/Thumbnail.png?v=636987856299906443" group-title="SiNEMA",Moviesmart Türk HD
 https://ds.ayakkabiparti.lol/mvturk/index.m3u8
 #EXTINF:-1 tvg-chno="15" tvg-id="24TV.tr" tvg-logo="https://i.imgur.com/8FO41es.png" group-title="News",24 TV (720p)

@@ -12,6 +12,10 @@ from pathlib import Path
 
 from refresh_streams import FORBIDDEN, parse_playlist, validate_hls
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 
 def inspect(playlist: Path) -> tuple[str, list]:
     text = playlist.read_text(encoding="utf-8-sig")

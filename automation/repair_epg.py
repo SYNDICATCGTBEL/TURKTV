@@ -4,12 +4,17 @@
 from __future__ import annotations
 
 import re
+import sys
 import urllib.request
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 PLAYLIST = Path("turktv.m3u")
 EPG_URL = "https://www.open-epg.com/files/turkey3.xml"
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 
 def normalize(value: str) -> str:

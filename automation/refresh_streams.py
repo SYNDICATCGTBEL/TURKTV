@@ -24,6 +24,10 @@ FORBIDDEN = re.compile(
 )
 HLS_URL = re.compile(r"https?://[^\s\"'<>\\]+?\.m3u8(?:\?[^\s\"'<>\\]*)?", re.IGNORECASE)
 
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+
 
 @dataclass
 class Entry:

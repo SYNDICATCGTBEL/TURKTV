@@ -24,7 +24,7 @@ https://rkhubpaomb.turknet.ercdn.net/fwjkgpasof/tv8/tv8_1080p.m3u8
 #EXTINF:-1 tvg-id="TV8,5 HD.tr" tvg-chno="12" tvg-logo="https://i.ibb.co/dgj3MTh/tv85.png" group-title="Spor",TV8.5
 https://rkhubpaomb.turknet.ercdn.net/fwjkgpasof/tv8bucuk/tv8bucuk.m3u8
 #EXTINF:-1 tvg-chno="13" tvg-id="NOW.tr" tvg-logo="https://i.imgur.com/5EYjWK7.png" group-title="Entertainment",NOW (720p)
-https://nowtv.daioncdn.net/nowtv/nowtv.m3u8?ce=3&app=65fa8997-2b2f-4529-85ea-84318628a608&st=WN1otwdG0waHdcdZD37K-A&e=1794625449
+https://nowtv.daioncdn.net/nowtv/nowtv.m3u8?ce=3&app=65fa8997-2b2f-4529-85ea-84318628a608&st=KuZXwQyCt--0ENhs7I7m7g&e=1794625460
 #EXTINF:-1 tvg-chno="14" tvg-id="MovieSmart Turk.tr" tvg-logo="https://dsmart-static-v2.ercdn.net//resize-width/400//content/e/ZI/13863/Thumbnail.png?v=636987856299906443" group-title="SiNEMA",Moviesmart Türk HD
 https://ds.ayakkabiparti.lol/mvturk/index.m3u8
 #EXTINF:-1 tvg-chno="15" tvg-id="24TV.tr" tvg-logo="https://i.imgur.com/8FO41es.png" group-title="News",24 TV (720p)
@@ -278,23 +278,23 @@ https://cdn-ktvtv.yayin.com.tr/ktvtv/ktvtv/playlist.m3u8
 #EXTINF:-1 tvg-chno="139",ORDU BEL TV
 https://cdn1-ordubeltv.yayin.com.tr/ordubeltv/ordubeltv/playlist.m3u8
 #EXTINF:-1 tvg-chno="140",DAMAR TV
-https://tvsms.club/tv.php?kanal=damar&file=.m3u8
+https://yayin.santraltr.com/hls/damar.m3u8
 #EXTINF:-1 tvg-chno="141",ARABESK TV
-https://tvsms.club/tv.php?kanal=arabeskyeni&file=.m3u8
+https://yayin.santraltr.com/hls/arabeskyeni.m3u8
 #EXTINF:-1 tvg-chno="142",SILA TV
-https://tvsms.club/tv.php?kanal=silatv&file=.m3u8
+https://yayin.santraltr.com/hls/silatv.m3u8
 #EXTINF:-1 tvg-chno="143",ZEYNO TV
-https://tvsms.club/tv.php?kanal=zeynotv&file=.m3u8
+https://yayin.santraltr.com/hls/zeynotv.m3u8
 #EXTINF:-1 tvg-chno="144",EZO TV
-https://tvsms.club/tvz.php?kanal=ezo&file=.m3u8
+https://yayin.santraltr.com/hls/ezo.m3u8
 #EXTINF:-1 tvg-chno="145",TOP POP TV
-https://tvsms.club/tvz.php?kanal=toppop&file=.m3u8
+https://yayin.santraltr.com/hls/toppop.m3u8
 #EXTINF:-1 tvg-chno="146",A VİVA TV
-https://tvsms.club/tv.php?kanal=vivatv&file=.m3u8
+https://yayin.santraltr.com/hls/vivatv.m3u8
 #EXTINF:-1 tvg-chno="147",ARMA TV
-https://tvsms.club/tvz.php?kanal=arma&file=.m3u8
+https://yayin.santraltr.com/hls/arma.m3u8
 #EXTINF:-1 tvg-chno="148",GENC SMS TV
-https://tvsms.club/tv.php?kanal=genctv&file=.m3u8
+https://yayin.santraltr.com/hls/genctv.m3u8
 #EXTINF:-1 tvg-chno="149",SAGLIK CHANEL
 https://live.euromediacenter.com/saglikchannel/tracks-v1a1/mono.m3u8
 #EXTINF:-1 tvg-chno="150",HÜR TV

@@ -42,8 +42,14 @@ jobs:
             echo "value=priority" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Vérifier la playlist avant modification
+        run: python automation/playlist_guard.py
+
       - name: Renouveler et contrôler les flux
         run: python automation/refresh_streams.py --mode "${{ steps.mode.outputs.value }}"
+
+      - name: Refuser toute régression
+        run: python automation/playlist_guard.py
 
       - name: Publier uniquement une correction vérifiée
         shell: bash

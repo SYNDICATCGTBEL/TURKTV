@@ -8,6 +8,8 @@ import concurrent.futures
 import json
 import re
 import sys
+import time
+import urllib.error
 import urllib.parse
 import urllib.request
 from dataclasses import dataclass
@@ -33,9 +35,22 @@ class Entry:
 
 def request(url: str, *, limit: int = 512_000) -> tuple[int, str, str, str]:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
-    with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
-        body = response.read(limit).decode("utf-8", errors="replace")
-        return response.status, response.headers.get("Content-Type", ""), body, response.geturl()
+    last_error: Exception | None = None
+    for attempt in range(2):
+        try:
+            with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
+                body = response.read(limit).decode("utf-8", errors="replace")
+                return response.status, response.headers.get("Content-Type", ""), body, response.geturl()
+        except urllib.error.HTTPError as exc:
+            if exc.code not in (408, 429, 500, 502, 503, 504) or attempt == 1:
+                raise
+            last_error = exc
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as exc:
+            if attempt == 1:
+                raise
+            last_error = exc
+        time.sleep(1)
+    raise last_error or RuntimeError("requête impossible")
 
 
 def parse_playlist(lines: list[str]) -> list[Entry]:
@@ -80,11 +95,17 @@ def validate_hls(url: str) -> tuple[bool, str]:
                     target,
                     headers={"User-Agent": USER_AGENT, "Range": "bytes=0-4095"},
                 )
-                with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
-                    response.read(4096)
-                    if response.status in (200, 206):
-                        return True, "manifeste et segment accessibles"
-                    errors.append(f"segment HTTP {response.status}")
+                for attempt in range(2):
+                    try:
+                        with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
+                            response.read(4096)
+                            if response.status in (200, 206):
+                                return True, "manifeste et segment accessibles"
+                            errors.append(f"segment HTTP {response.status}")
+                    except (urllib.error.URLError, TimeoutError, ConnectionError):
+                        if attempt == 1:
+                            raise
+                        time.sleep(1)
             except Exception as exc:
                 errors.append(type(exc).__name__)
         return False, "aucune variante vidéo accessible: " + ", ".join(errors[:4])

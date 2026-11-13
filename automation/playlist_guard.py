@@ -4,12 +4,13 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
 from pathlib import Path
 
-from refresh_streams import FORBIDDEN, parse_playlist
+from refresh_streams import FORBIDDEN, parse_playlist, validate_hls
 
 
 def inspect(playlist: Path) -> tuple[str, list]:
@@ -28,6 +29,10 @@ def write_baseline(playlist: Path, baseline_path: Path) -> None:
         "required_epg_url": match.group(1) if match else "",
         "priority_order": [entry.name for entry in entries[:14]],
         "required_channels": [entry.name for entry in entries],
+        "stream_hashes": {
+            entry.name: hashlib.sha256(entry.url.encode("utf-8")).hexdigest()
+            for entry in entries
+        },
     }
     baseline_path.write_text(
         json.dumps(baseline, ensure_ascii=False, indent=2) + "\n",
@@ -78,6 +83,21 @@ def validate(playlist: Path, baseline_path: Path) -> int:
     if invalid:
         errors.append("adresses invalides: " + ", ".join(invalid))
 
+    current_by_name = {entry.name.casefold(): entry for entry in entries}
+    changed: list[str] = []
+    for name, expected_hash in baseline.get("stream_hashes", {}).items():
+        entry = current_by_name.get(name.casefold())
+        if not entry:
+            continue
+        actual_hash = hashlib.sha256(entry.url.encode("utf-8")).hexdigest()
+        if actual_hash == expected_hash:
+            continue
+        valid, reason = validate_hls(entry.url)
+        if not valid:
+            errors.append(f"nouvelle adresse refusée pour {entry.name}: {reason}")
+        else:
+            changed.append(entry.name)
+
     if errors:
         print("PUBLICATION BLOQUÉE — régression détectée", file=sys.stderr)
         for error in errors:
@@ -86,6 +106,8 @@ def validate(playlist: Path, baseline_path: Path) -> int:
     print(
         f"GARDE ANTI-RÉGRESSION: OK — {len(entries)} chaînes, {tvg_ids} identifiants EPG"
     )
+    if changed:
+        print("NOUVELLES ADRESSES VALIDÉES: " + ", ".join(changed))
     return 0
 
 

@@ -31,11 +31,11 @@ class Entry:
     url: str
 
 
-def request(url: str, *, limit: int = 512_000) -> tuple[int, str, str]:
+def request(url: str, *, limit: int = 512_000) -> tuple[int, str, str, str]:
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
     with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
         body = response.read(limit).decode("utf-8", errors="replace")
-        return response.status, response.headers.get("Content-Type", ""), body
+        return response.status, response.headers.get("Content-Type", ""), body, response.geturl()
 
 
 def parse_playlist(lines: list[str]) -> list[Entry]:
@@ -43,7 +43,7 @@ def parse_playlist(lines: list[str]) -> list[Entry]:
     for index, line in enumerate(lines):
         if not line.startswith("#EXTINF"):
             continue
-        name = line.split(",", 1)[1].strip() if "," in line else "Chaîne sans nom"
+        name = line.rsplit(",", 1)[1].strip() if "," in line else "Chaîne sans nom"
         url_index = index + 1
         while url_index < len(lines) and (not lines[url_index].strip() or lines[url_index].startswith("#")):
             url_index += 1
@@ -54,34 +54,47 @@ def parse_playlist(lines: list[str]) -> list[Entry]:
 
 def validate_hls(url: str) -> tuple[bool, str]:
     try:
-        status, _, manifest = request(url)
+        status, _, manifest, final_url = request(url)
         if status != 200 or "#EXTM3U" not in manifest:
             return False, f"manifeste HTTP {status} ou format incorrect"
         candidates = [line.strip() for line in manifest.splitlines() if line.strip() and not line.startswith("#")]
         if not candidates:
             return False, "manifeste sans média"
-        target = urllib.parse.urljoin(url, candidates[0])
-        if target.lower().split("?", 1)[0].endswith(".m3u8"):
-            status, _, child = request(target)
-            if status != 200 or "#EXTM3U" not in child:
-                return False, "variante vidéo inaccessible"
-            media = [line.strip() for line in child.splitlines() if line.strip() and not line.startswith("#")]
-            if not media:
-                return False, "variante sans segment"
-            target = urllib.parse.urljoin(target, media[0])
-        req = urllib.request.Request(target, headers={"User-Agent": USER_AGENT, "Range": "bytes=0-4095"})
-        with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
-            response.read(4096)
-            if response.status not in (200, 206):
-                return False, f"segment HTTP {response.status}"
-        return True, "manifeste et segment accessibles"
+        errors: list[str] = []
+        # Certains diffuseurs laissent une ancienne qualité en première position.
+        # On essaie plusieurs variantes avant de déclarer toute la chaîne en panne.
+        for candidate in candidates[:8]:
+            target = urllib.parse.urljoin(final_url, candidate)
+            try:
+                if target.lower().split("?", 1)[0].endswith(".m3u8"):
+                    child_status, _, child, child_url = request(target)
+                    if child_status != 200 or "#EXTM3U" not in child:
+                        errors.append(f"variante HTTP {child_status}")
+                        continue
+                    media = [line.strip() for line in child.splitlines() if line.strip() and not line.startswith("#")]
+                    if not media:
+                        errors.append("variante sans segment")
+                        continue
+                    target = urllib.parse.urljoin(child_url, media[0])
+                req = urllib.request.Request(
+                    target,
+                    headers={"User-Agent": USER_AGENT, "Range": "bytes=0-4095"},
+                )
+                with urllib.request.urlopen(req, timeout=TIMEOUT) as response:
+                    response.read(4096)
+                    if response.status in (200, 206):
+                        return True, "manifeste et segment accessibles"
+                    errors.append(f"segment HTTP {response.status}")
+            except Exception as exc:
+                errors.append(type(exc).__name__)
+        return False, "aucune variante vidéo accessible: " + ", ".join(errors[:4])
     except Exception as exc:  # Le détail reste sans URL ni secret.
         return False, f"{type(exc).__name__}: {str(exc)[:120]}"
 
 
 def renew_from_official_page(rule: dict) -> tuple[str | None, str]:
     try:
-        _, _, html = request(rule["page"], limit=2_000_000)
+        _, _, html, _ = request(rule["page"], limit=2_000_000)
         allowed = {host.lower() for host in rule["allowed_stream_hosts"]}
         candidates: list[str] = []
         for raw in HLS_URL.findall(html.replace("\\/", "/").replace("&amp;", "&")):
@@ -107,6 +120,12 @@ def main() -> int:
     playlist_path = Path(args.playlist)
     config = json.loads(Path(args.config).read_text(encoding="utf-8"))
     original = playlist_path.read_text(encoding="utf-8-sig")
+    if "@{value=" in original:
+        print("ERREUR: métadonnées M3U corrompues détectées", file=sys.stderr)
+        return 2
+    if "x-tvg-url=" not in original.splitlines()[0].casefold():
+        print("ERREUR: adresse EPG absente de l'en-tête M3U", file=sys.stderr)
+        return 2
     newline = "\r\n" if "\r\n" in original else "\n"
     lines = original.splitlines()
     entries = parse_playlist(lines)
